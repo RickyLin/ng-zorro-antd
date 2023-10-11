@@ -19,7 +19,14 @@ import {
   TemplateRef,
   ViewEncapsulation
 } from '@angular/core';
-import { AbstractControl, FormControlDirective, FormControlName, NgControl, NgModel } from '@angular/forms';
+import {
+  AbstractControl,
+  FormControlDirective,
+  FormControlName,
+  FormGroupDirective,
+  NgControl,
+  NgModel
+} from '@angular/forms';
 import { Observable, Subject, Subscription } from 'rxjs';
 import { filter, startWith, takeUntil, tap } from 'rxjs/operators';
 
@@ -84,7 +91,10 @@ export class NzFormControlComponent implements OnChanges, OnDestroy, OnInit, Aft
   validateControl: AbstractControl | NgModel | null = null;
   innerTip: string | TemplateRef<{ $implicit: AbstractControl | NgModel }> | null = null;
 
-  @ContentChild(NgControl, { static: false }) defaultValidateControl?: FormControlName | FormControlDirective;
+  @ContentChild(NgControl, { static: false }) defaultValidateControl?:
+    | FormControlName
+    | FormControlDirective
+    | FormGroupDirective;
   @Input() nzSuccessTip?: string | TemplateRef<{ $implicit: AbstractControl | NgModel }>;
   @Input() nzWarningTip?: string | TemplateRef<{ $implicit: AbstractControl | NgModel }>;
   @Input() nzErrorTip?: string | TemplateRef<{ $implicit: AbstractControl | NgModel }>;
@@ -267,8 +277,12 @@ export class NzFormControlComponent implements OnChanges, OnDestroy, OnInit, Aft
   }
 
   ngAfterContentInit(): void {
+    console.log('i am alive!!');
     if (!this.validateControl && !this.validateString) {
-      if (this.defaultValidateControl instanceof FormControlDirective) {
+      if (
+        this.defaultValidateControl instanceof FormControlDirective ||
+        this.defaultValidateControl instanceof FormGroupDirective
+      ) {
         this.nzValidateStatus = this.defaultValidateControl.control;
       } else {
         this.nzValidateStatus = this.defaultValidateControl!;
